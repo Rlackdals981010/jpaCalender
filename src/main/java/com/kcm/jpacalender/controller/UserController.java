@@ -21,7 +21,7 @@ public class UserController {
     }
 
     //7 단계. res 추가
-    @PostMapping()
+    @PostMapping("/create")
     public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto, HttpServletResponse res){
 
         return userService.createUser(userRequestDto,res);

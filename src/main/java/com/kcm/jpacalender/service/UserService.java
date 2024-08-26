@@ -7,6 +7,7 @@ import com.kcm.jpacalender.dto.UserResponseDto;
 import com.kcm.jpacalender.entity.Event;
 import com.kcm.jpacalender.entity.Post;
 import com.kcm.jpacalender.entity.User;
+import com.kcm.jpacalender.entity.UserRoleEnum;
 import com.kcm.jpacalender.exception.IncorrectEmailException;
 import com.kcm.jpacalender.exception.IncorrectPasswordException;
 import com.kcm.jpacalender.jwt.JwtUtil;
@@ -14,6 +15,7 @@ import com.kcm.jpacalender.repository.EventRepository;
 import com.kcm.jpacalender.repository.PostRepository;
 import com.kcm.jpacalender.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,10 @@ public class UserService {
         this.jwtUtil = jwtUtil;
     }
 
+    // 9 단계. 관리자 판별용 토큰
+    @Value("${admin.token}")
+    private String ADMIN_TOKEN;
+
     //7단계. 비밀번호 추가
     public UserResponseDto createUser(UserRequestDto userRequestDto, HttpServletResponse res) {
         String username = userRequestDto.getUsername();
@@ -49,10 +55,20 @@ public class UserService {
             throw new IllegalArgumentException("이미 존재하는 Email입니다.");
         }
 
-        User createUser = new User(username, password, email);
+        //9 단계 추가. 사용자 ROLE 확인
+        UserRoleEnum role = UserRoleEnum.USER;
+        if(userRequestDto.isAdmin()){
+            if (!ADMIN_TOKEN.equals(userRequestDto.getAdminToken())) {
+                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
+            }
+            role = UserRoleEnum.ADMIN;
+        }
+
+
+        User createUser = new User(username, password, email,role);
 
         userRepository.save(createUser);
-        String token = jwtUtil.createToken(createUser.getId());
+        String token = jwtUtil.createToken(createUser.getId(),createUser.getRole());
         jwtUtil.addJwtToCookie(token,res);
 
         return new UserResponseDto(createUser);
@@ -96,16 +112,15 @@ public class UserService {
 
         //이메일 확인
         User user = userRepository.findByEmail(userEmail).orElseThrow(
-                () -> new IncorrectEmailException("등록된 이메일이 없습니다.")
+                () -> new IllegalArgumentException("등록된 이메일이 없습니다.")
         );
 
         //비밀번호 확인
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IncorrectPasswordException("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        String token = jwtUtil.createToken(user.getId());
-        jwtUtil.addJwtToHear(token, res);
+        String token = jwtUtil.createToken(user.getId(),user.getRole());
         jwtUtil.addJwtToCookie(token,res);
 
     }

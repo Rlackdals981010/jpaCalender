@@ -1,6 +1,7 @@
 package com.kcm.jpacalender.jwt;
 
 
+import com.kcm.jpacalender.entity.UserRoleEnum;
 import com.kcm.jpacalender.exception.NoTokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -47,12 +48,13 @@ public class JwtUtil {
     //////////////////////////////////////////////////
 
     //생성
-    public String createToken(Long userId){
+    public String createToken(Long userId, UserRoleEnum role){
         Date date = new Date(); // 발급일
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(Long.toString(userId))//ID
+                        .claim(AUTHORIZATION_KEY, role)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))//만료 시각
                         .setIssuedAt(date) //생성일
                         .signWith(key,signatureAlgorithm) //암호와 정책

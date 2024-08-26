@@ -7,6 +7,7 @@ import com.kcm.jpacalender.dto.UserResponseDto;
 import com.kcm.jpacalender.entity.Event;
 import com.kcm.jpacalender.entity.Post;
 import com.kcm.jpacalender.entity.User;
+import com.kcm.jpacalender.exception.NoAuthenticationUser;
 import com.kcm.jpacalender.repository.EventRepository;
 import com.kcm.jpacalender.repository.PostRepository;
 import com.kcm.jpacalender.repository.UserRepository;
@@ -19,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.kcm.jpacalender.entity.UserRoleEnum.USER;
 
 @Service
 public class EventService {
@@ -51,6 +54,9 @@ public class EventService {
 
     @Transactional
     public EventResponseDto updateEvent(User user,Long eventId, EventRequestDto eventRequestDto) {
+        if(user.getRole()==USER){
+            throw new NoAuthenticationUser("권한이 없습니다.");
+        }
         Event updateEvent = findEvent(eventId);
         updateEvent.update(user,eventRequestDto);
         return new EventResponseDto(updateEvent);
@@ -78,7 +84,10 @@ public class EventService {
                 .getContent();
     }
 
-    public Long deleteEvent(Long eventId) {
+    public Long deleteEvent(User user,Long eventId) {
+        if(user.getRole()==USER){
+            throw new NoAuthenticationUser("권한이 없습니다.");
+        }
         Event deleteEvent = findEvent(eventId);
         eventRepository.delete(deleteEvent);
         return eventId;

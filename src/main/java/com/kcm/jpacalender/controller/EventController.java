@@ -48,9 +48,11 @@ public class EventController {
     }
 
     //4단계. 일정 삭제 추가
+    //9단계. 로그인한 user가 event를 삭제하는 방식으로 변경
     @DeleteMapping("{eventId}")
-    public Long deleteEvent(@PathVariable Long eventId){
-        return eventSerivce.deleteEvent(eventId);
+    public Long deleteEvent(@PathVariable Long eventId,HttpServletRequest req){
+        User user = (User) req.getAttribute("user");
+        return eventSerivce.deleteEvent(user,eventId);
     }
 
 

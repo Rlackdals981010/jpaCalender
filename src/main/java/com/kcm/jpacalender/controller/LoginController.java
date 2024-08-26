@@ -20,7 +20,7 @@ public class LoginController {
         this.userService = userService;
     }
 
-    @PostMapping()
+    @PostMapping
     public void logIn(@RequestBody UserRequestDto loginRequestDto, HttpServletResponse res){
         userService.logIn(loginRequestDto,res);
     }

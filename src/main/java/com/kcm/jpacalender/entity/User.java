@@ -27,6 +27,11 @@ public class User extends Timestamped{
     @Column(nullable = false)
     String password;
 
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
+
+
     @OneToMany(mappedBy = "user",cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Post> postList = new ArrayList<>();
 
@@ -35,6 +40,13 @@ public class User extends Timestamped{
         this.username = username;
         this.password = password;
         this.email = email;
+    }
+
+    public User(String username, String password, String email, UserRoleEnum role) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
     }
 
     public void update(UserRequestDto userRequestDto) {
