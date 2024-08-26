@@ -49,10 +49,6 @@ public class Event extends Timestamped {
         this.content = eventRequestDto.getContent();
     }
 
-    public void addEventList(Comment comment) { // 2단계. 댓글 추가시 해당 원문에 연결
-        this.commentList.add(comment);
-        comment.setEvent(this);
-    }
 
 
 }
