@@ -1,3 +1,4 @@
+#1단계
 CREATE TABLE events
 (
     event_id     BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -7,6 +8,18 @@ CREATE TABLE events
     created_date DATETIME     NOT NULL,
     updated_date DATETIME     NOT NULL
 
+);
+
+#2단계
+CREATE TABLE comments
+(
+    comment_id   BIGINT PRIMARY KEY AUTO_INCREMENT,
+    comment      VARCHAR(255) NOT NULL,
+    created_date DATETIME     NOT NULL,
+    updated_date DATETIME     NOT NULL,
+    username     VARCHAR(255) NOT NULL,
+    event_id     BIGINT       NOT NULL,
+    FOREIGN KEY (event_id) REFERENCES events (event_id)
 );
 
 CREATE TABLE users
@@ -19,20 +32,9 @@ CREATE TABLE users
 
 );
 
-#USER-EVENT 중간 테이블
-CREATE TABLE comments
-(
-    comment_id   BIGINT PRIMARY KEY AUTO_INCREMENT,
-    username     VARCHAR(255) NOT NULL,
-    comment      VARCHAR(255) NOT NULL,
-    created_date DATETIME     NOT NULL,
-    updated_date DATETIME     NOT NULL,
-    event_id     BIGINT       NOT NULL,
-    user_id      BIGINT       Not NULL,
-    FOREIGN KEY (event_id) REFERENCES events (event_id),
-    FOREIGN KEY (user_id) REFERENCES users (user_id)
-);
 
+
+#USER-EVENT 중간 테이블
 CREATE TABLE posts
 (
     post_id  BIGINT PRIMARY KEY AUTO_INCREMENT,
