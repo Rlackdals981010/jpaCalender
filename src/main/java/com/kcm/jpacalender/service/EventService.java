@@ -3,6 +3,7 @@ package com.kcm.jpacalender.service;
 import com.kcm.jpacalender.dto.EventRequestDto;
 import com.kcm.jpacalender.dto.EventResponseDto;
 
+import com.kcm.jpacalender.dto.UserResponseDto;
 import com.kcm.jpacalender.entity.Event;
 import com.kcm.jpacalender.entity.Post;
 import com.kcm.jpacalender.entity.User;
@@ -15,7 +16,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EventService {
@@ -53,18 +56,25 @@ public class EventService {
         return new EventResponseDto(updateEvent);
     }
 
+    @Transactional(readOnly = true)
+    public EventResponseDto printEvent(Long eventId) {
+        Event event = findEvent(eventId);
+
+        List<UserResponseDto> users = event.getPostList().stream()
+                .map(post -> {
+                    User user = post.getUser();
+                    return new UserResponseDto(user.getId(), user.getUsername(), user.getEmail()); // UserResponseDto로 변환합니다.
+                })
+                .collect(Collectors.toList());
+
+        return new EventResponseDto(event, users);
+    }
+
+    @Transactional(readOnly = true)
     public List<EventResponseDto> printEvents(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedAt").descending());
         return eventRepository.findAll(pageable)
-                .map(event -> new EventResponseDto(
-                        event.getId(),
-                        event.getTitle(),
-                        event.getContent(),
-                        event.getCommentList().size(),
-                        event.getCreatedAt(),
-                        event.getModifiedAt(),
-                        event.getUser_id() // 5단계 수정
-                ))
+                .map(event -> new EventResponseDto(event))
                 .getContent();
     }
 

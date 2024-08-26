@@ -1,10 +1,12 @@
 package com.kcm.jpacalender.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Table(name = "posts")
+@Getter
 @Setter
 public class Post {
     @Id
@@ -12,11 +14,11 @@ public class Post {
     @Column(name = "post_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
     private Event event;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 }

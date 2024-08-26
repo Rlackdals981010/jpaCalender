@@ -4,6 +4,7 @@ import com.kcm.jpacalender.entity.Event;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class EventResponseDto {
@@ -20,6 +21,8 @@ public class EventResponseDto {
     private Integer commentCount;
 
 
+    List<UserResponseDto> users;
+    //5단계에서 userName -> userId로 수정
     public EventResponseDto(Event event) {
         this.id = event.getId();
         this.userId = event.getUser_id();
@@ -27,16 +30,22 @@ public class EventResponseDto {
         this.content = event.getContent();
         this.created_date = event.getCreatedAt();
         this.updated_date = event.getModifiedAt();
+        this.commentCount = event.getCommentList().size();
     }
 
-    //5단계에서 userName -> userId로 수정
-    public EventResponseDto(Long event_id,String title, String content, Integer commentCount, LocalDateTime createdAt, LocalDateTime modifiedAt, Long userId){
-        this.id = event_id;
-        this.title = title;
-        this.content = content;
-        this.commentCount = commentCount;
-        this.created_date = createdAt;
-        this.updated_date = modifiedAt;
-        this.userId = userId;
+
+
+
+    //6단계에서 유저의 고유 식별자, 유저명 , 이메일 추가
+    public EventResponseDto(Event event, List<UserResponseDto> users) {
+        this.id = event.getId();
+        this.userId = event.getUser_id();
+        this.title = event.getTitle();
+        this.content = event.getContent();
+        this.commentCount = event.getCommentList().size();
+        this.created_date = event.getCreatedAt();
+        this.updated_date = event.getModifiedAt();
+        this.users = users;
     }
+
 }

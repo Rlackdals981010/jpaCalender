@@ -24,7 +24,8 @@ public class EventController {
 
     @GetMapping("/{eventId}")
     public EventResponseDto printEvent(@PathVariable Long eventId){
-        return new EventResponseDto(eventSerivce.findEvent(eventId));
+        //return new EventResponseDto(eventSerivce.findEvent(eventId));
+        return eventSerivce.printEvent(eventId);
     }
 
     //3단계. 페이징 추가

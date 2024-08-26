@@ -34,7 +34,7 @@ public class Event extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-    @OneToMany(mappedBy = "event", cascade = {CascadeType.PERSIST,CascadeType.REMOVE})//2단계. 하나의 본문에 여러 댓글이 달린다., 4단계. 영속성 전이를 이용한 연관 관계 객체 삭제
+    @OneToMany(mappedBy = "event", cascade = {CascadeType.PERSIST,CascadeType.REMOVE})//2단계. 하나의 본문에 여러 댓글이 달린다., 4단계. 영속성 전이를 이용한 연관 관계 객체 삭제. 6단계. 디폴트가 LAZY라 직접 접근을 명시해야지 Post테이블에 접근
     private List<Comment> commentList = new ArrayList<>();
     @OneToMany(mappedBy = "event", cascade = {CascadeType.PERSIST,CascadeType.REMOVE})//2단계. 하나의 본문에 여러 댓글이 달린다., 4단계. 영속성 전이를 이용한 연관 관계 객체 삭제
     private List<Post> postList = new ArrayList<>();

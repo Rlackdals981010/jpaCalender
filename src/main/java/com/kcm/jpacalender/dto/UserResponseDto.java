@@ -21,4 +21,10 @@ public class UserResponseDto {
         this.created_date = user.getCreatedAt();
         this.updated_date = user.getModifiedAt();
     }
+
+    public UserResponseDto(Long user_id, String userName, String email) {
+        this.user_id = user_id;
+        this.userName = userName;
+        this.email = email;
+    }
 }
