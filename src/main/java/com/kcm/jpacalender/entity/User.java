@@ -20,20 +20,21 @@ public class User extends Timestamped{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="user_id")
     private Long id;
-
     @Column(nullable = false)
     String username;
-
     @Column(nullable = false)
     String email;
-
+    @Column(nullable = false)
+    String password;
 
     @OneToMany(mappedBy = "user",cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Post> postList = new ArrayList<>();
 
-    public User(UserRequestDto userRequestDto) {
-        this.username = userRequestDto.getUsername();
-        this.email = userRequestDto.getEmail();
+
+    public User(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
     }
 
     public void update(UserRequestDto userRequestDto) {

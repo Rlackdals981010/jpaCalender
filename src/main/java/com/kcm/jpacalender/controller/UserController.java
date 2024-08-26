@@ -3,6 +3,7 @@ package com.kcm.jpacalender.controller;
 import com.kcm.jpacalender.dto.UserRequestDto;
 import com.kcm.jpacalender.dto.UserResponseDto;
 import com.kcm.jpacalender.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,9 +18,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    //7 단계. res 추가
     @PostMapping()
-    public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto){
-        return userService.createUser(userRequestDto);
+    public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto, HttpServletResponse res){
+
+        return userService.createUser(userRequestDto,res);
     }
 
     @GetMapping("/{userId}")

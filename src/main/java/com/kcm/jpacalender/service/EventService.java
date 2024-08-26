@@ -63,7 +63,7 @@ public class EventService {
         List<UserResponseDto> users = event.getPostList().stream()
                 .map(post -> {
                     User user = post.getUser();
-                    return new UserResponseDto(user.getId(), user.getUsername(), user.getEmail()); // UserResponseDto로 변환합니다.
+                    return new UserResponseDto(user); // UserResponseDto로 변환합니다.
                 })
                 .collect(Collectors.toList());
 

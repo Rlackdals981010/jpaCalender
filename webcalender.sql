@@ -49,7 +49,7 @@ CREATE TABLE posts
 ALTER TABLE events DROP username;
 ALTER TABLE events ADD user_id VARCHAR(255) NOT NULL ;
 
-
+# 7단계
 ALTER TABLE users ADD password VARCHAR(255) NOT NULL ;
 
 ALTER TABLE users ADD role VARCHAR(255) NOT NULL ;
