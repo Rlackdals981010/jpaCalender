@@ -19,6 +19,7 @@ public class EventResponseDto {
     private LocalDateTime updated_date;
 
     private Integer commentCount;
+    private String weather;
 
 
     List<UserResponseDto> users;
@@ -31,6 +32,7 @@ public class EventResponseDto {
         this.created_date = event.getCreatedAt();
         this.updated_date = event.getModifiedAt();
         this.commentCount = event.getCommentList().size();
+        this.weather = event.getWeather();
     }
 
 

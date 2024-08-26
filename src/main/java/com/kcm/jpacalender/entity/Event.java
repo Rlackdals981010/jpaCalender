@@ -42,8 +42,8 @@ public class Event extends Timestamped {
     // 10단계 날씨 필드 추가
     private String weather;
 
-    public Event(EventRequestDto eventRequestDto) {
-        this.user_id = eventRequestDto.getUserid();// 5단계에서 name -> id
+    public Event(User user, EventRequestDto eventRequestDto) {
+        this.user_id = user.getId();// 5단계에서 name -> id
         this.title = eventRequestDto.getTitle();
         this.content = eventRequestDto.getContent();
     }

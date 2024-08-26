@@ -51,7 +51,7 @@ public class EventService {
 
 
     public EventResponseDto createEvent(User user,EventRequestDto eventRequestDto) {
-        Event event = new Event(eventRequestDto);
+        Event event = new Event(user, eventRequestDto);
         eventRepository.save(event);  // 엔티티를 먼저 저장하여 createdAt이 설정되도록 함
 
         String weather = getWeather(event.getCreatedAt());
