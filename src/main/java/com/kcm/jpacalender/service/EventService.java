@@ -4,8 +4,14 @@ import com.kcm.jpacalender.dto.EventRequestDto;
 import com.kcm.jpacalender.dto.EventResponseDto;
 import com.kcm.jpacalender.entity.Event;
 import com.kcm.jpacalender.repository.EventRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class EventService {
@@ -35,5 +41,20 @@ public class EventService {
         Event updateEvent = findEvent(eventId);
         updateEvent.update(eventRequestDto);
         return new EventResponseDto(updateEvent);
+    }
+
+    public List<EventResponseDto> printEvents(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("modifiedAt").descending());
+        return eventRepository.findAll(pageable)
+                .map(event -> new EventResponseDto(
+                        event.getId(),
+                        event.getTitle(),
+                        event.getContent(),
+                        event.getCommentList().size(),
+                        event.getCreatedAt(),
+                        event.getModifiedAt(),
+                        event.getUsername()
+                ))
+                .getContent();
     }
 }

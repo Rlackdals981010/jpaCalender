@@ -16,6 +16,8 @@ public class EventResponseDto {
     private LocalDateTime created_date;
     private LocalDateTime updated_date;
 
+    private Integer commentCount;
+
 
     public EventResponseDto(Event event) {
         this.id = event.getId();
@@ -24,5 +26,15 @@ public class EventResponseDto {
         this.content = event.getContent();
         this.created_date = event.getCreatedAt();
         this.updated_date = event.getModifiedAt();
+    }
+
+    public EventResponseDto(Long event_id,String title, String content, Integer commentCount, LocalDateTime createdAt, LocalDateTime modifiedAt, String username){
+        this.id = event_id;
+        this.title = title;
+        this.content = content;
+        this.commentCount = commentCount;
+        this.created_date = createdAt;
+        this.updated_date = modifiedAt;
+        this.userName = username;
     }
 }

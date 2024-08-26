@@ -5,6 +5,8 @@ import com.kcm.jpacalender.dto.EventResponseDto;
 import com.kcm.jpacalender.service.EventService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/events")
 public class EventController {
@@ -23,6 +25,12 @@ public class EventController {
     @GetMapping("/{eventId}")
     public EventResponseDto printEvent(@PathVariable Long eventId){
         return new EventResponseDto(eventSerivce.findEvent(eventId));
+    }
+
+    //3단계. 페이징 추가
+    @GetMapping()
+    public List<EventResponseDto> printEvents(@RequestParam(value = "page") Integer page, @RequestParam(value = "size", defaultValue = "10") Integer size){
+        return eventSerivce.printEvents(page, size);
 
     }
 
