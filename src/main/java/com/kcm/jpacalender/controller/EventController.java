@@ -2,7 +2,9 @@ package com.kcm.jpacalender.controller;
 
 import com.kcm.jpacalender.dto.EventRequestDto;
 import com.kcm.jpacalender.dto.EventResponseDto;
+import com.kcm.jpacalender.entity.User;
 import com.kcm.jpacalender.service.EventService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,9 +19,12 @@ public class EventController {
         this.eventSerivce = eventSerivce;
     }
 
+    //8단계. 로그인한 user가 event를 생성하는 방식으로 변경
     @PostMapping()
-    public EventResponseDto createEvent(@RequestBody EventRequestDto eventRequestDto){
-        return eventSerivce.createEvent(eventRequestDto);
+    public EventResponseDto createEvent(@RequestBody EventRequestDto eventRequestDto, HttpServletRequest req){
+        User user = (User) req.getAttribute("user");
+
+        return eventSerivce.createEvent(user,eventRequestDto);
     }
 
     @GetMapping("/{eventId}")
@@ -35,9 +40,11 @@ public class EventController {
 
     }
 
+    //8단계. 로그인한 user가 event를 수정하는 방식으로 변경
     @PutMapping("/{eventId}")
-    public EventResponseDto updateEvent(@PathVariable Long eventId, @RequestBody EventRequestDto eventRequestDto){
-        return eventSerivce.updateEvent(eventId, eventRequestDto);
+    public EventResponseDto updateEvent(@PathVariable Long eventId, @RequestBody EventRequestDto eventRequestDto,HttpServletRequest req){
+        User user = (User) req.getAttribute("user");
+        return eventSerivce.updateEvent(user,eventId, eventRequestDto);
     }
 
     //4단계. 일정 삭제 추가
@@ -45,5 +52,6 @@ public class EventController {
     public Long deleteEvent(@PathVariable Long eventId){
         return eventSerivce.deleteEvent(eventId);
     }
+
 
 }

@@ -7,6 +7,8 @@ import com.kcm.jpacalender.dto.UserResponseDto;
 import com.kcm.jpacalender.entity.Event;
 import com.kcm.jpacalender.entity.Post;
 import com.kcm.jpacalender.entity.User;
+import com.kcm.jpacalender.exception.IncorrectEmailException;
+import com.kcm.jpacalender.exception.IncorrectPasswordException;
 import com.kcm.jpacalender.jwt.JwtUtil;
 import com.kcm.jpacalender.repository.EventRepository;
 import com.kcm.jpacalender.repository.PostRepository;
@@ -56,7 +58,8 @@ public class UserService {
         return new UserResponseDto(createUser);
     }
 
-    public User printUser(Long userId) {
+    public User printUser(User user) {
+        Long userId = user.getId();
         return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저는 없습니다."));
 
     }
@@ -66,18 +69,18 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto updateUser(Long userId, UserRequestDto userRequestDto) {
-        User updateuser = printUser(userId);
+    public UserResponseDto updateUser(User user, UserRequestDto userRequestDto) {
+        User updateuser = printUser(user);
         updateuser.update(userRequestDto);
         return new UserResponseDto(updateuser);
     }
 
-    public void deleteUser(Long userId) {
-        User deleteUser = printUser(userId);
+    public void deleteUser(User user) {
+        User deleteUser = printUser(user);
         userRepository.delete(deleteUser);
     }
 
-    public void placeUser(Long userId, Long eventId, Long placeUserId) {
+    public void placeUser(User user, Long eventId, Long placeUserId) {
         User placeUser=userRepository.findById(placeUserId).orElseThrow(() -> new IllegalArgumentException("해당 유저는 없습니다."));
         Event placeEvent=eventRepository.findById(eventId).orElseThrow(()-> new IllegalArgumentException("해당 일정은 없습니다."));
 
@@ -87,7 +90,23 @@ public class UserService {
         postRepository.save(post);
     }
 
-    public void logIn(LoginRequestDto loginRequestDto, HttpServletResponse res) {
+    public void logIn(UserRequestDto loginRequestDto,HttpServletResponse res) {
+        String userEmail = loginRequestDto.getEmail();
+        String password = loginRequestDto.getPassword();
+
+        //이메일 확인
+        User user = userRepository.findByEmail(userEmail).orElseThrow(
+                () -> new IncorrectEmailException("등록된 이메일이 없습니다.")
+        );
+
+        //비밀번호 확인
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IncorrectPasswordException("비밀번호가 일치하지 않습니다.");
+        }
+
+        String token = jwtUtil.createToken(user.getId());
+        jwtUtil.addJwtToHear(token, res);
+        jwtUtil.addJwtToCookie(token,res);
 
     }
 }

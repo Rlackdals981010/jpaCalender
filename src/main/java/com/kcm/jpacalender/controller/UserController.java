@@ -3,8 +3,10 @@ package com.kcm.jpacalender.controller;
 import com.kcm.jpacalender.dto.UserRequestDto;
 import com.kcm.jpacalender.dto.UserResponseDto;
 import com.kcm.jpacalender.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
+import com.kcm.jpacalender.entity.User;
 
 import java.util.List;
 
@@ -25,36 +27,41 @@ public class UserController {
         return userService.createUser(userRequestDto,res);
     }
 
-    @GetMapping("/{userId}")
-    public UserResponseDto printUser(@PathVariable Long userId){
-        return new UserResponseDto(userService.printUser(userId));
+    //8 단계. 필터를 통해서 User를 소유하게 되었음 더 이상 유저ID는 필요없음
+    @GetMapping()
+    public UserResponseDto printUser(HttpServletRequest req){
+        User user = (User) req.getAttribute("user");
+        System.out.println(user.getId());
+        return new UserResponseDto(userService.printUser(user));
     }
 
-    @GetMapping()
+    @GetMapping("/all")
     public List<UserResponseDto> printUsers(){
         return userService.printUsers();
     }
 
-    @PutMapping("/{userId}")
-    public UserResponseDto updateUser(@PathVariable Long userId, @RequestBody UserRequestDto userRequestDto){
-        return userService.updateUser(userId, userRequestDto);
-    }
-
-    @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable Long userId) {
-        userService.deleteUser(userId);
+    //8 단계. 필터를 통해서 User를 소유하게 되었음 더 이상 유저ID는 필요없음음
+    @PutMapping()
+    public UserResponseDto updateUser(@RequestBody UserRequestDto userRequestDto,HttpServletRequest req){
+        User user = (User) req.getAttribute("user");
+        return userService.updateUser(user, userRequestDto);
     }
 
 
-    @PostMapping("/{userId}")
-    public void placeUser(@PathVariable Long userId,
-                          @RequestParam(value = "eventId")Long eventId,
-                          @RequestParam(value = "placeUserId") Long placeUserId) {
-        userService.placeUser(userId,eventId,placeUserId);
+    //필터를 통해서 User를 소유하게 되었음 더 이상 유저ID는 필요없음
+    @DeleteMapping()
+    public void deleteUser(HttpServletRequest req) {
+        User user = (User) req.getAttribute("user");
+        userService.deleteUser(user);
     }
 
 
-
-
+    @PostMapping("/place")
+    public void placeUser(@RequestParam(value = "eventId")Long eventId,
+                          @RequestParam(value = "placeUserId") Long placeUserId,
+                          HttpServletRequest req) {
+        User user = (User) req.getAttribute("user");
+        userService.placeUser(user,eventId,placeUserId);
+    }
 
 }

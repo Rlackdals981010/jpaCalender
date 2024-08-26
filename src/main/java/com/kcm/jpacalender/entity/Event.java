@@ -45,8 +45,8 @@ public class Event extends Timestamped {
         this.content = eventRequestDto.getContent();
     }
 
-    public void update(EventRequestDto eventRequestDto) {
-        this.user_id = eventRequestDto.getUserid();// 5단계에서 name -> id
+    public void update(User user,EventRequestDto eventRequestDto) {
+        this.user_id = user.getId();
         this.title = eventRequestDto.getTitle();
         this.content = eventRequestDto.getContent();
     }

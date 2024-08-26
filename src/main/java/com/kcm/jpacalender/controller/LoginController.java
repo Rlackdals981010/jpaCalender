@@ -2,6 +2,7 @@ package com.kcm.jpacalender.controller;
 
 
 import com.kcm.jpacalender.dto.LoginRequestDto;
+import com.kcm.jpacalender.dto.UserRequestDto;
 import com.kcm.jpacalender.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +20,8 @@ public class LoginController {
         this.userService = userService;
     }
 
-    @PostMapping
-    public void logIn(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
+    @PostMapping()
+    public void logIn(@RequestBody UserRequestDto loginRequestDto, HttpServletResponse res){
         userService.logIn(loginRequestDto,res);
     }
 }

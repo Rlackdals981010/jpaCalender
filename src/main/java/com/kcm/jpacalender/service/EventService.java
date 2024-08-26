@@ -34,11 +34,11 @@ public class EventService {
     }
 
 
-    public EventResponseDto createEvent(EventRequestDto eventRequestDto) {
+    public EventResponseDto createEvent(User user,EventRequestDto eventRequestDto) {
         Event event = new Event(eventRequestDto);
 
         EventResponseDto eventResponseDto = new EventResponseDto(eventRepository.save(event));
-        setUserToEvent(event.getId(), event.getUser_id()); // 5단계. post랑 연관관계
+        setUserToEvent(event.getId(), user.getId()); // 5단계. post랑 연관관계
 
         return eventResponseDto;
     }
@@ -50,9 +50,9 @@ public class EventService {
     }
 
     @Transactional
-    public EventResponseDto updateEvent(Long eventId, EventRequestDto eventRequestDto) {
+    public EventResponseDto updateEvent(User user,Long eventId, EventRequestDto eventRequestDto) {
         Event updateEvent = findEvent(eventId);
-        updateEvent.update(eventRequestDto);
+        updateEvent.update(user,eventRequestDto);
         return new EventResponseDto(updateEvent);
     }
 
