@@ -57,4 +57,10 @@ public class EventService {
                 ))
                 .getContent();
     }
+
+    public Long deleteEvent(Long eventId) {
+        Event deleteEvent = findEvent(eventId);
+        eventRepository.delete(deleteEvent);
+        return eventId;
+    }
 }

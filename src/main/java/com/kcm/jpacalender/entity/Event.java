@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Persistent;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ public class Event extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-    @OneToMany(mappedBy = "event")//2단계. 하나의 본문에 여러 댓글이 달린다.
+    @OneToMany(mappedBy = "event", cascade = {CascadeType.PERSIST,CascadeType.REMOVE})//2단계. 하나의 본문에 여러 댓글이 달린다., 4단계. 영속성 전이를 이용한 연관 관계 객체 삭제
     private List<Comment> commentList = new ArrayList<>();
 
     public Event(EventRequestDto eventRequestDto) {
@@ -51,4 +53,6 @@ public class Event extends Timestamped {
         this.commentList.add(comment);
         comment.setEvent(this);
     }
+
+
 }

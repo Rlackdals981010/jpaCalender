@@ -39,4 +39,10 @@ public class EventController {
         return eventSerivce.updateEvent(eventId, eventRequestDto);
     }
 
+    //4단계. 일정 삭제 추가
+    @DeleteMapping("{eventId}")
+    public Long deleteEvent(@PathVariable Long eventId){
+        return eventSerivce.deleteEvent(eventId);
+    }
+
 }
