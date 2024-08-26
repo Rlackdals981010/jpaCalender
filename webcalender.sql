@@ -22,6 +22,7 @@ CREATE TABLE comments
     FOREIGN KEY (event_id) REFERENCES events (event_id)
 );
 
+#5단계.
 CREATE TABLE users
 (
     user_id      BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -33,7 +34,7 @@ CREATE TABLE users
 );
 
 
-
+#5단계
 #USER-EVENT 중간 테이블
 CREATE TABLE posts
 (
@@ -44,8 +45,10 @@ CREATE TABLE posts
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
-ALTER TABLE users DROP username;
-ALTER TABLE users ADD user_id VARCHAR(255) NOT NULL ;
+#5단계
+ALTER TABLE events DROP username;
+ALTER TABLE events ADD user_id VARCHAR(255) NOT NULL ;
+
 
 ALTER TABLE users ADD password VARCHAR(255) NOT NULL ;
 

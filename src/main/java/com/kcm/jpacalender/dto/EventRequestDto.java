@@ -6,7 +6,8 @@ import lombok.Getter;
 @Getter
 public class EventRequestDto {
 
-    String username;
+    //String username;
+    Long userid; // 5단계에서 수정
     String title;
     String content;
 
