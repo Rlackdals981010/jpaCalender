@@ -55,4 +55,5 @@ ALTER TABLE users ADD password VARCHAR(255) NOT NULL ;
 # 9단계
 ALTER TABLE users ADD role VARCHAR(255) NOT NULL ;
 
+# 10단계
 ALTER TABLE events ADD weather VARCHAR(255);

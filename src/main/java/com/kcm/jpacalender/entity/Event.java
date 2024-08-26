@@ -39,6 +39,9 @@ public class Event extends Timestamped {
     @OneToMany(mappedBy = "event", cascade = {CascadeType.PERSIST,CascadeType.REMOVE})//2단계. 하나의 본문에 여러 댓글이 달린다., 4단계. 영속성 전이를 이용한 연관 관계 객체 삭제
     private List<Post> postList = new ArrayList<>();
 
+    // 10단계 날씨 필드 추가
+    private String weather;
+
     public Event(EventRequestDto eventRequestDto) {
         this.user_id = eventRequestDto.getUserid();// 5단계에서 name -> id
         this.title = eventRequestDto.getTitle();

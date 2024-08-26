@@ -1,5 +1,8 @@
 package com.kcm.jpacalender.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kcm.jpacalender.dto.EventRequestDto;
 import com.kcm.jpacalender.dto.EventResponseDto;
 
@@ -11,14 +14,22 @@ import com.kcm.jpacalender.exception.NoAuthenticationUser;
 import com.kcm.jpacalender.repository.EventRepository;
 import com.kcm.jpacalender.repository.PostRepository;
 import com.kcm.jpacalender.repository.UserRepository;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.kcm.jpacalender.entity.UserRoleEnum.USER;
@@ -29,22 +40,29 @@ public class EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final RestTemplate restTemplate;
 
-    public EventService(EventRepository eventRepository,UserRepository userRepository,PostRepository postRepository) {
+    public EventService(EventRepository eventRepository, UserRepository userRepository, PostRepository postRepository, RestTemplateBuilder builder) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
+        this.restTemplate = builder.build();
     }
 
 
     public EventResponseDto createEvent(User user,EventRequestDto eventRequestDto) {
         Event event = new Event(eventRequestDto);
+        eventRepository.save(event);  // 엔티티를 먼저 저장하여 createdAt이 설정되도록 함
 
-        EventResponseDto eventResponseDto = new EventResponseDto(eventRepository.save(event));
+        String weather = getWeather(event.getCreatedAt());
+        event.setWeather(weather);
+
         setUserToEvent(event.getId(), user.getId()); // 5단계. post랑 연관관계
 
-        return eventResponseDto;
+        return new EventResponseDto(event);
     }
+
+
 
     public Event findEvent(Long eventId) {
         return eventRepository.findById(eventId).orElseThrow(() ->
@@ -102,5 +120,42 @@ public class EventService {
         post.setUser(setUser);
 
         postRepository.save(post);
+    }
+
+    public String getWeather(LocalDateTime date) {
+        // 날짜를 "MM-dd" 형식으로 포맷팅
+        String formattedDate = date.format(DateTimeFormatter.ofPattern("MM-dd"));
+
+        URI uri = UriComponentsBuilder
+                .fromUriString("https://f-api.github.io")
+                .path("/f-api/weather.json")
+                .queryParam("date", formattedDate)
+                .encode()
+                .build()
+                .toUri();
+
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(uri, String.class);
+        String responseBody = responseEntity.getBody();
+
+        // Jackson ObjectMapper를 사용하여 JSON 문자열을 객체로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Map<String, String>> weatherData = null;
+        try {
+            weatherData = objectMapper.readValue(responseBody, new TypeReference<List<Map<String, String>>>() {});
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            // 예외 처리: 로그를 남기거나 기본 값을 반환할 수 있습니다.
+            return "Error processing weather data";
+        }
+
+        // 날짜에 맞는 날씨 정보를 찾기
+        for (Map<String, String> entry : weatherData) {
+            if (entry.get("date").equals(formattedDate)) {
+                return entry.get("weather");
+            }
+        }
+
+        // 날짜에 맞는 날씨 정보가 없는 경우
+        return "No weather data available for the specified date";
     }
 }
