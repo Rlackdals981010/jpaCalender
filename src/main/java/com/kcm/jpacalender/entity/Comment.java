@@ -2,6 +2,7 @@ package com.kcm.jpacalender.entity;
 
 import com.kcm.jpacalender.dto.CommentRequestDto;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,7 +11,7 @@ import lombok.Setter;
 @Getter
 
 @Table(name = "comments")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends Timestamped{
 
     @Id

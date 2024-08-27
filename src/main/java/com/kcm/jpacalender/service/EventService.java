@@ -115,9 +115,9 @@ public class EventService {
         Event setEvent = findEvent(eventId);
         User setUser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("해당 유저는 없습니다."));
 
-        Post post = new Post();
-        post.setEvent(setEvent);
-        post.setUser(setUser);
+        Post post = Post.createInstance();
+        post.linkEventUser(setEvent,setUser);
+
 
         postRepository.save(post);
     }

@@ -3,6 +3,7 @@ package com.kcm.jpacalender.entity;
 
 import com.kcm.jpacalender.dto.EventRequestDto;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +18,7 @@ import java.util.*;
 @Getter
 
 @Table(name = "events")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Event extends Timestamped {
 
     @Id
@@ -41,6 +42,10 @@ public class Event extends Timestamped {
 
     // 10단계 날씨 필드 추가
     private String weather;
+
+    public static Post createInstance() {
+        return new Post();
+    }
 
     public Event(User user, EventRequestDto eventRequestDto) {
         this.user_id = user.getId();// 5단계에서 name -> id

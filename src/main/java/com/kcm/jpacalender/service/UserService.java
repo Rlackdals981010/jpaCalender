@@ -100,9 +100,9 @@ public class UserService {
         User placeUser=userRepository.findById(placeUserId).orElseThrow(() -> new IllegalArgumentException("해당 유저는 없습니다."));
         Event placeEvent=eventRepository.findById(eventId).orElseThrow(()-> new IllegalArgumentException("해당 일정은 없습니다."));
 
-        Post post = new Post();
-        post.setEvent(placeEvent);
-        post.setUser(placeUser);
+        Post post = Post.createInstance();
+        post.linkEventUser(placeEvent,placeUser);
+
         postRepository.save(post);
     }
 
