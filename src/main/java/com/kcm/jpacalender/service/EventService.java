@@ -55,7 +55,7 @@ public class EventService {
         eventRepository.save(event);  // 엔티티를 먼저 저장하여 createdAt이 설정되도록 함
 
         String weather = getWeather(event.getCreatedAt());
-        event.setWeather(weather);
+        event.installWeather(weather);
 
         setUserToEvent(event.getId(), user.getId()); // 5단계. post랑 연관관계
 
@@ -87,7 +87,7 @@ public class EventService {
         List<UserResponseDto> users = event.getPostList().stream()
                 .map(post -> {
                     User user = post.getUser();
-                    return new UserResponseDto(user); // UserResponseDto로 변환합니다.
+                    return new UserResponseDto(user);
                 })
                 .collect(Collectors.toList());
 

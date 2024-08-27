@@ -5,7 +5,7 @@ import com.kcm.jpacalender.dto.EventRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 
 
@@ -15,7 +15,7 @@ import java.util.*;
 
 @Entity
 @Getter
-@Setter
+
 @Table(name = "events")
 @NoArgsConstructor
 public class Event extends Timestamped {
@@ -29,9 +29,9 @@ public class Event extends Timestamped {
 //    private String username;
     @Column(nullable = false) // 5단계에서 수정
     private Long user_id;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String title;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
     private String content;
 
     @OneToMany(mappedBy = "event", cascade = {CascadeType.PERSIST,CascadeType.REMOVE})//2단계. 하나의 본문에 여러 댓글이 달린다., 4단계. 영속성 전이를 이용한 연관 관계 객체 삭제. 6단계. 디폴트가 LAZY라 직접 접근을 명시해야지 Post테이블에 접근
@@ -52,6 +52,10 @@ public class Event extends Timestamped {
         this.user_id = user.getId();
         this.title = eventRequestDto.getTitle();
         this.content = eventRequestDto.getContent();
+    }
+
+    public void installWeather(String weather){
+        this.weather = weather;
     }
 
 

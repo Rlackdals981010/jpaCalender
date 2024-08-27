@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
+
 @Table(name = "comments")
 @NoArgsConstructor
 public class Comment extends Timestamped{
@@ -17,9 +17,9 @@ public class Comment extends Timestamped{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="comment_id")
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false,length = 20)
     private String username;
-    @Column(nullable = false)
+    @Column(nullable = false,length = 200)
     private String comment;
 
     @ManyToOne //2단계. 여러 댓글이 1개의 일정에 묶인다.
@@ -34,5 +34,9 @@ public class Comment extends Timestamped{
     public void update(CommentRequestDto commentRequestDto) {
         this.username = commentRequestDto.getUsername();
         this.comment = commentRequestDto.getComment();
+    }
+
+    public void linkEvent(Event event){
+        this.event = event;
     }
 }

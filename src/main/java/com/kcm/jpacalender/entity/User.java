@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
+
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
@@ -36,11 +36,6 @@ public class User extends Timestamped{
     private List<Post> postList = new ArrayList<>();
 
 
-    public User(String username, String password, String email) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-    }
 
     public User(String username, String password, String email, UserRoleEnum role) {
         this.username = username;

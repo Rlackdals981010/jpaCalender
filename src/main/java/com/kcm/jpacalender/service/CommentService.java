@@ -25,7 +25,7 @@ public class CommentService {
     public CommentResponseDto createComment(Long eventId, CommentRequestDto commentRequestDto) {
         Event event = findEvent(eventId);
         Comment createComment = new Comment(commentRequestDto);
-        createComment.setEvent(event);
+        createComment.linkEvent(event);
         commentRepository.save(createComment);
         return new CommentResponseDto(createComment);
     }
