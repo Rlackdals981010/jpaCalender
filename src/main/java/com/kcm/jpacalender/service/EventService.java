@@ -14,6 +14,8 @@ import com.kcm.jpacalender.exception.NoAuthenticationUser;
 import com.kcm.jpacalender.repository.EventRepository;
 import com.kcm.jpacalender.repository.PostRepository;
 import com.kcm.jpacalender.repository.UserRepository;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -137,25 +139,15 @@ public class EventService {
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(uri, String.class);
         String responseBody = responseEntity.getBody();
 
-        // Jackson ObjectMapper를 사용하여 JSON 문자열을 객체로 변환
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<Map<String, String>> weatherData = null;
-        try {
-            weatherData = objectMapper.readValue(responseBody, new TypeReference<List<Map<String, String>>>() {});
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            // 예외 처리: 로그를 남기거나 기본 값을 반환할 수 있습니다.
-            return "Error processing weather data";
-        }
-
-        // 날짜에 맞는 날씨 정보를 찾기
-        for (Map<String, String> entry : weatherData) {
-            if (entry.get("date").equals(formattedDate)) {
-                return entry.get("weather");
+        JSONArray weathers = new JSONArray(responseBody);
+        for(int i = 0; i<weathers.length(); i++) {
+            JSONObject jsonObject = weathers.getJSONObject(i);
+            // 날짜가 일치하는 weather값을 반환한다.
+            if (jsonObject.getString("date").equals(formattedDate)) {
+                return jsonObject.getString("weather");
             }
         }
 
-        // 날짜에 맞는 날씨 정보가 없는 경우
         return "No weather data available for the specified date";
     }
 }

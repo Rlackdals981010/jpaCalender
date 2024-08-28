@@ -44,6 +44,8 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
     //7단계. passwordEncoder
     implementation 'at.favre.lib:bcrypt:0.10.2'
+
+    implementation 'org.json:json:20230227'
 }
 
 tasks.named('test') {
