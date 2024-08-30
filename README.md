@@ -194,7 +194,8 @@ JPA를 활용한 upgrade 일정 관리 앱 서버 입니다.
 
 ![VER_1](https://github.com/user-attachments/assets/71afbdc3-5e63-41c5-9733-885b6da99930)
 ![VER_2](https://github.com/user-attachments/assets/bd9c6a9a-9d73-4d90-8a06-215a42e006b3)
-<img width="448" alt="스크린샷 2024-08-23 오후 12 20 48" src="https://github.com/user-attachments/assets/79f89e63-1b59-4434-94d4-065309b115fa">
+![VER_3](https://github.com/user-attachments/assets/1b99de06-b480-4ea7-8349-35690ae947b3)
+
 
 
 
